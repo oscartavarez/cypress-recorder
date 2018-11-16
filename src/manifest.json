@@ -1,12 +1,13 @@
 {
-  "name": "Puppeteer Recorder",
+  "name": "Cypress Recorder",
   "version": "0.5.0",
   "manifest_version": 2,
-  "description": "A Chrome extension for recording browser interaction and generating Puppeteer scripts",
+  "description": "A Chrome extension for recording browser interaction and generating Cypress scripts",
   "permissions": [
     "storage",
     "webNavigation",
     "tabs",
+	"activeTab",
     "*://*/"
   ],
   "icons" : {
@@ -15,7 +16,7 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {
     "default_icon": "images/icon-black.png",
-    "default_title": "Puppeteer Recorder",
+    "default_title": "Cypress Recorder",
     "default_popup": "index.html"
   },
   "background": {

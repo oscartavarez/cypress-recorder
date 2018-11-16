@@ -24,14 +24,14 @@ class RecordingController {
 
   start () {
     console.debug('start recording')
+  	chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+		chrome.tabs.sendMessage(tabs[0].id, { control: 'get-viewport-size' })
+		chrome.tabs.sendMessage(tabs[0].id, { control: 'get-current-url' })
+  	})
+
     this.cleanUp(() => {
       this._badgeState = 'rec'
       this.injectScript()
-
-      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-        chrome.tabs.sendMessage(tabs[0].id, { control: 'get-viewport-size' })
-        chrome.tabs.sendMessage(tabs[0].id, { control: 'get-current-url' })
-      })
 
       this._boundedMessageHandler = this.handleMessage.bind(this)
       this._boundedNavigationHandler = this.handleNavigation.bind(this)
@@ -97,8 +97,8 @@ class RecordingController {
     this.handleMessage({ selector: undefined, value, action: pptrActions.VIEWPORT })
   }
 
-  recordNavigation () {
-    this.handleMessage({ selector: undefined, value: undefined, action: pptrActions.NAVIGATION })
+  recordNavigation (url) {
+    this.handleMessage({ selector: undefined, value: undefined, href: url, action: pptrActions.NAVIGATION })
   }
 
   handleMessage (msg, sender) {
@@ -123,11 +123,16 @@ class RecordingController {
   }
 
   handleNavigation ({ frameId }) {
-    console.debug('frameId is:', frameId)
+
     this.injectScript()
     if (frameId === 0) {
-      this.recordNavigation()
+	  	let that = this;
+
+		chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+			that.recordNavigation(tabs[0].url)
+		});
     }
+
   }
 
   handleWait () {

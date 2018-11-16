@@ -2,20 +2,20 @@ import domEvents from './dom-events-to-record'
 import pptrActions from './pptr-actions'
 import Block from './Block'
 
-const importPuppeteer = `const puppeteer = require('puppeteer');\n`
+const header = `describe('test_name', function() {\n\n`
 
-const header = `const browser = await puppeteer.launch()
-const page = await browser.newPage()`
+const footer = `})`;
 
-const footer = `await browser.close()`
+//const wrappedHeader = `(async () => {
+  //const browser = await puppeteer.launch()
+  //const page = await browser.newPage()\n`
 
-const wrappedHeader = `(async () => {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()\n`
+const wrappedHeader = ` it('what_it_does', function() {\n\n`
 
-const wrappedFooter = `  await browser.close()
-})()`
+//const wrappedFooter = `  await browser.close()
+//})()`
 
+const wrappedFooter = ` })\n\n`
 export const defaults = {
   wrapAsync: true,
   headless: true,
@@ -29,7 +29,7 @@ export default class CodeGenerator {
   constructor (options) {
     this._options = Object.assign(defaults, options)
     this._blocks = []
-    this._frame = 'page'
+    this._frame = 'cy'
     this._frameId = 0
     this._allFrames = {}
 
@@ -37,34 +37,36 @@ export default class CodeGenerator {
   }
 
   generate (events) {
-    return importPuppeteer + this._getHeader() + this._parseEvents(events) + this._getFooter()
+    return this._getHeader() + this._parseEvents(events) + this._getFooter()
   }
 
   _getHeader () {
     console.debug(this._options)
-    let hdr = this._options.wrapAsync ? wrappedHeader : header
-    hdr = this._options.headless ? hdr : hdr.replace('launch()', 'launch({ headless: false })')
-    return hdr
+    //let hdr = this._options.wrapAsync ? wrappedHeader : header
+    //hdr = this._options.headless ? hdr : hdr.replace('launch()', 'launch({ headless: false })')
+    return header + wrappedHeader;
   }
 
   _getFooter () {
-    return this._options.wrapAsync ? wrappedFooter : footer
+    //return this._options.wrapAsync ? wrappedFooter : footer
+	return wrappedFooter + footer;
   }
 
   _parseEvents (events) {
-    console.debug(`generating code for ${events ? events.length : 0} events`)
-    let result = ''
+	chrome.extension.getBackgroundPage().console.log('some events', events);
+    console.debug(`generating code for ${events ? events.length : 0} events`);
+    let result = '';
 
     for (let i = 0; i < events.length; i++) {
-      const { action, selector, value, href, keyCode, tagName, frameId, frameUrl } = events[i]
+      const { action, selector, value, href, keyCode, tagName, targetType, frameId, frameUrl } = events[i]
 
       // we need to keep a handle on what frames events originate from
-      this._setFrames(frameId, frameUrl)
+      this._setFrames(frameId, frameUrl);
 
       switch (action) {
         case 'keydown':
           if (keyCode === 9) {
-            this._blocks.push(this._handleKeyDown(selector, value, keyCode))
+            //this._blocks.push(this._handleKeyDown(selector, value, keyCode))
           }
           break
         case 'click':
@@ -72,8 +74,17 @@ export default class CodeGenerator {
           break
         case 'change':
           if (tagName === 'SELECT') {
-            this._blocks.push(this._handleChange(selector, value))
+            this._blocks.push(this._handleChange(tagName, selector, value))
           }
+
+          if (tagName === 'INPUT') {
+			if(targetType){
+            	this._blocks.push(this._handleChange(tagName, selector, value, targetType))
+			} else {
+            	this._blocks.push(this._handleChange(tagName, selector, value))
+			}
+          }
+
           break
         case 'goto*':
           this._blocks.push(this._handleGoto(href, frameId))
@@ -83,6 +94,7 @@ export default class CodeGenerator {
           break
         case 'navigation*':
           this._blocks.push(this._handleWaitForNavigation())
+          this._blocks.push(this._handleGoto(href, frameId))
           this._hasNavigation = true
           break
       }
@@ -90,20 +102,24 @@ export default class CodeGenerator {
 
     if (this._hasNavigation && this._options.waitForNavigation) {
       console.debug('Adding navigationPromise declaration')
-      const block = new Block(this._frameId, { type: pptrActions.NAVIGATION_PROMISE, value: 'const navigationPromise = page.waitForNavigation()' })
-      this._blocks.unshift(block)
+      //const block = new Block(this._frameId, { type: pptrActions.NAVIGATION_PROMISE, value: 'const navigationPromise = page.waitForNavigation()' })
+      //this._blocks.unshift(block)
     }
 
     console.debug('post processing blocks:', this._blocks)
-    this._postProcess()
+   // this._postProcess()
 
-    const indent = this._options.wrapAsync ? '  ' : ''
-    const newLine = `\n`
+    const indent = this._options.wrapAsync ? '    ' : ''
+    let newLine = `\n`
+
+    if (this._options.blankLinesBetweenBlocks && this._blocks.length > 0) {
+    	newLine = `\n \n`
+	}
 
     for (let block of this._blocks) {
       const lines = block.getLines()
       for (let line of lines) {
-        result += indent + line.value + newLine
+        result += indent + line.value + newLine;
       }
     }
 
@@ -117,7 +133,7 @@ export default class CodeGenerator {
       this._allFrames[frameId] = frameUrl
     } else {
       this._frameId = 0
-      this._frame = 'page'
+      this._frame = 'cy'
     }
   }
 
@@ -134,33 +150,42 @@ export default class CodeGenerator {
 
   _handleKeyDown (selector, value) {
     const block = new Block(this._frameId)
-    block.addLine({ type: domEvents.KEYDOWN, value: `await ${this._frame}.type('${selector}', '${value}')` })
+    block.addLine({ type: domEvents.KEYDOWN, value: `${this._frame}.get('${selector}').type('${value}')`})
     return block
   }
 
   _handleClick (selector) {
     const block = new Block(this._frameId)
     if (this._options.waitForSelectorOnClick) {
-      block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.waitForSelector('${selector}')` })
+      //block.addLine({ type: domEvents.CLICK, value: `${this._frame}.waitForSelector('${selector}')` })
     }
-    block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.click('${selector}')` })
+	console.debug('Selector', selector, document.querySelector(selector));
+    block.addLine({ type: domEvents.CLICK, value: `${this._frame}.get('${selector}').click()` })
     return block
   }
-  _handleChange (selector, value) {
-    return new Block(this._frameId, { type: domEvents.CHANGE, value: `await ${this._frame}.select('${selector}', '${value}')` })
+  _handleChange (tagName, selector, value, targetType) {
+
+    if (tagName === 'INPUT') {
+		if (targetType === 'checkbox') {
+			return new Block(this._frameId, { type: domEvents.CHANGE, value: `${this._frame}.get('${selector}').check('${value}')`})
+		}
+    	return new Block(this._frameId, { type: domEvents.CHANGE, value: `${this._frame}.get('${selector}').type('${value}')`})
+	}
+
+    return new Block(this._frameId, { type: domEvents.CHANGE, value: `${this._frame}.get('${selector}').select('${value}')`})
   }
   _handleGoto (href) {
-    return new Block(this._frameId, { type: pptrActions.GOTO, value: `await ${this._frame}.goto('${href}')` })
+    return new Block(this._frameId, { type: pptrActions.GOTO, value: `${this._frame}.visit('${href}')` })
   }
 
   _handleViewport (width, height) {
-    return new Block(this._frameId, { type: pptrActions.VIEWPORT, value: `await ${this._frame}.setViewport({ width: ${width}, height: ${height} })` })
+    return new Block(this._frameId, { type: pptrActions.VIEWPORT, value: `${this._frame}.viewport({ width: ${width}, height: ${height} })` })
   }
 
   _handleWaitForNavigation () {
     const block = new Block(this._frameId)
     if (this._options.waitForNavigation) {
-      block.addLine({type: pptrActions.NAVIGATION, value: `await navigationPromise`})
+      //block.addLine({type: pptrActions.NAVIGATION, value: `${this._frame}.wait(500)`})
     }
     return block
   }

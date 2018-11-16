@@ -1,7 +1,7 @@
 {
-  "name": "puppeteer-recorder",
-  "version": "0.5.0",
-  "description": "A Chrome extension for recording browser interaction and generating Puppeteer scripts",
+  "name": "cypress-recorder",
+  "version": "0.0.1",
+  "description": "A Chrome extension for recording browser interaction and generating Cypress scripts",
   "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development DEBUG=puppeteer-recorder:* webpack --watch",

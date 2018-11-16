@@ -31,7 +31,7 @@ class EventRecorder {
 
       const msg = { control: 'event-recorder-started' }
       this.sendMessage(msg)
-      console.debug('Puppeteer Recorder in-page EventRecorder started')
+      console.debug('Cypress Recorder in-page EventRecorder started')
     })
   }
 
@@ -83,6 +83,7 @@ class EventRecorder {
       selector: selector,
       value: e.target.value,
       tagName: e.target.tagName,
+      targetType: e.target.type,
       action: e.type,
       keyCode: e.keyCode ? e.keyCode : null,
       href: e.target.href ? e.target.href : null,
