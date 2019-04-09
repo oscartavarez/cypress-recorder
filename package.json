@@ -18,19 +18,19 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/checkly/puppeteer-recorder"
+    "url": "https://github.com/oscartavarez/cypress-recorder"
   },
   "keywords": [
-    "puppeteer",
+    "cypress",
     "chrome",
     "extension"
   ],
   "author": "Tim Nolet",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/checkly/puppeteer-recorder/issues"
+    "url": "https://github.com/oscartavarez/cypress-recorder/issues"
   },
-  "homepage": "https://github.com/checkly/puppeteer-recorder#readme",
+  "homepage": "https://github.com/oscartavarez/cypress-recorder#readme",
   "dependencies": {
     "@medv/finder": "^1.1.0",
     "vue": "^2.5.17",

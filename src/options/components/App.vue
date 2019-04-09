@@ -2,7 +2,7 @@
   <div class="options">
     <div class="container">
       <div class="header">
-        Recorder Recorder Options
+        Cypress Recorder Options
         <small class="saving-badge text-muted" v-show="saving">
           Saving...
         </small>
@@ -28,26 +28,8 @@
           <div class="settings-block-main">
             <div class="settings-group">
               <label>
-                <input id="options-code-wrapAsync" type="checkbox" v-model="options.code.wrapAsync" @change="save">
-                wrap code in async function
-              </label>
-            </div>
-            <div class="settings-group">
-              <label>
-                <input id="options-code-headless" type="checkbox" v-model="options.code.headless" @change="save">
-                set <code>headless</code> in puppeteer launch options
-              </label>
-            </div>
-            <div class="settings-group">
-              <label>
-                <input id="options-code-waitForNavigation" type="checkbox" v-model="options.code.waitForNavigation" @change="save">
-                add <code>waitForNavigation</code> lines on navigation
-              </label>
-            </div>
-            <div class="settings-group">
-              <label>
-                <input id="options-code-waitForSelectorOnClick" type="checkbox" v-model="options.code.waitForSelectorOnClick" @change="save">
-                add <code>waitForSelector</code> lines before every <code>page.click()</code>
+                <input id="options-code-wrapDescribe" type="checkbox" v-model="options.code.wrapDescribe" @change="save">
+                wrap code in describe function
               </label>
             </div>
             <div class="settings-group">

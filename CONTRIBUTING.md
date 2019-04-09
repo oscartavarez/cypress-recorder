@@ -1,6 +1,6 @@
 # Contributing
 
-HI! Thanks you for your interest in Puppeteer Recorder! We'd love to accept your patches and contributions, but please remember that this project was started first and foremost to serve the users of the Checkly API and Site transaction monitoring service.
+HI! Thanks you for your interest in Cypress Recorder! We'd love to accept your patches and contributions, but please remember that this project was started first and foremost to serve the users of the Checkly API and Site transaction monitoring service.
 
 ## New feature guidelines
 
@@ -14,8 +14,8 @@ When authoring new features or extending existing ones, consider the following:
 1. Clone this repository
 
 ```bash
-git clone https://github.com/checkly/puppeteer-recorder
-cd puppeteer-recorder
+git clone https://github.com/oscartavarez/cypress-recorder.git
+cd cypress-recorder
 ```
 
 2. Install dependencies
@@ -35,7 +35,7 @@ information on using pull requests.
 
 ## Code Style
 
-- Coding style is fully defined in [.eslintrc](https://github.com/checkly/puppeteer-recorder/blob/master/.eslintrc.js)
+- Coding style is fully defined in [.eslintrc](https://github.com/oscartavarez/cypress-recorder/blob/master/.eslintrc.js)
 - Comments should be generally avoided. If the code would not be understood without comments, consider re-writing the code to make it self-explanatory.
 
 To run code linter, use:
@@ -56,10 +56,10 @@ footer
 ```
 
 1. *label* is one of the following:
-    - `fix` - puppeteer bug fixes.
-    - `feat` - puppeteer features.
+    - `fix` - cypress bug fixes.
+    - `feat` - cypress features.
     - `docs` - changes to docs, e.g. `docs(api.md): ..` to change documentation.
-    - `test` - changes to puppeteer tests infrastructure.
+    - `test` - changes to cypress tests infrastructure.
     - `style` - puppeteer code style: spaces/alignment/wrapping etc.
     - `chore` - build-related work, e.g. doclint changes / travis / appveyor.
 2. *namespace* is put in parenthesis after label and is optional.

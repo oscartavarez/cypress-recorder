@@ -14,7 +14,7 @@ describe('RecordingTab.vue', () => {
     expect(wrapper.find('.event-list').isEmpty()).toBe(true)
   })
 
-  test('it has the correct recording Puppeteer custom events state', () => {
+  test('it has the correct recording Cypress custom events state', () => {
     const wrapper = mount(RecordingTab)
     wrapper.setProps({
       isRecording: true,

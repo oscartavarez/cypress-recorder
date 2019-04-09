@@ -16,7 +16,7 @@ describe('RecordingTab.vue', () => {
 
   test('it show a code box when there is code', () => {
     const wrapper = mount(ResultsTab, { localVue })
-    wrapper.setProps({ code: `await page.click('.class')` })
+    wrapper.setProps({ code: `cy.get('.class').clic()` })
     expect(wrapper.element).toMatchSnapshot()
     expect(wrapper.find('code.javascript').exists()).toBe(true)
   })

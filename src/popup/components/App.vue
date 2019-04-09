@@ -102,12 +102,13 @@
       },
       start () {
         this.cleanUp()
-        console.debug('start recorder')
+        console.debug('start recorder, popup app')
         this.bus.postMessage({ action: 'start' })
       },
       stop () {
         console.debug('stop recorder')
         this.bus.postMessage({ action: 'stop' })
+		window.localStorage.setItem('messageStarted', 0);
 
         this.$chrome.storage.local.get(['recording', 'options'], ({ recording, options }) => {
           console.debug('loaded recording', recording)
@@ -120,6 +121,8 @@
           this.code = codeGen.generate(this.recording)
           this.showResultsTab = true
           this.storeState()
+
+		  this.$chrome.storage.local.set({'firstRun': 0});
         })
       },
       restart () {

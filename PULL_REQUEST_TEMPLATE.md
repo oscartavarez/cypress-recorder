@@ -3,7 +3,7 @@
 ## Description
 
 Please include a summary of the change or which issue is fixed. Also, include relevant motivation and context.
-Remember, as mentioned in the [contribution guidelines](https://github.com/checkly/puppeteer-recorder/blob/master/CONTRIBUTING.md) that
+Remember, as mentioned in the [contribution guidelines](https://github.com/oscartavarez/cypress-recorder/blob/master/CONTRIBUTING.md) that
 PR's should be as atomic as possible 1 feature === 1 PR. 1 bugfix === 1 PR.
 
 ## Type of change
