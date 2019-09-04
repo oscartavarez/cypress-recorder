@@ -84,12 +84,28 @@ class EventRecorder {
     }
   }
 
+  getDataAttributeContainer (element) {
+    if (!element) return
+
+    if (element.attributes[this.dataAttribute]) {
+      return element
+    }
+
+    if (element.parentElement) {
+      return this.getDataAttributeContainer(element.parentElement)
+    }
+
+    return null
+  }
+
   recordEvent (e) {
     if (this.previousEvent && this.previousEvent.timeStamp === e.timeStamp) return
     this.previousEvent = e
 
-    const selector = e.target.hasAttribute && e.target.hasAttribute(this.dataAttribute)
-      ? formatDataSelector(e.target, this.dataAttribute)
+    const dataAttributeContainer = this.getDataAttributeContainer(e.target)
+
+    const selector = dataAttributeContainer
+      ? formatDataSelector(dataAttributeContainer, this.dataAttribute)
       : finder(e.target, { seedMinLength: 5, optimizedMinLength: 10 })
 
     const msg = {
