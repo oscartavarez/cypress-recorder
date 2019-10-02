@@ -41,7 +41,7 @@
 </template>
 
 <script>
-  import { version } from '../../../package.json'
+  import { version } from '../../../manifest.json'
   import CodeGenerator from '../../code-generator/CodeGenerator'
   import RecordingTab from "./RecordingTab.vue"
   import ResultsTab from "./ResultsTab.vue";
