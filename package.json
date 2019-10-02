@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development DEBUG=puppeteer-recorder:* webpack --watch",
     "build": "NODE_ENV=production webpack",
-    "dist": "NODE_ENV=production webpack && node scripts/zip.js",
+    "dist": "npm run build && node scripts/zip.js",
     "test": "npm run unit-test && npm run e2e-test",
     "test-prod": "NODE_ENV=production npm run unit-test && npm run e2e-test",
     "unit-test": "jest __tests__/.*.spec.js --silent",
