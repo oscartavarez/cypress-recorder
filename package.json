@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development DEBUG=puppeteer-recorder:* webpack --watch",
-    "build": "NODE_ENV=production webpack",
-    "dist": "NODE_ENV=production webpack && node scripts/zip.js",
+    "build": "npm run update-version && NODE_ENV=production webpack",
+    "dist": "npm run build && node scripts/zip.js",
     "test": "npm run unit-test && npm run e2e-test",
     "test-prod": "NODE_ENV=production npm run unit-test && npm run e2e-test",
     "unit-test": "jest __tests__/.*.spec.js --silent",
     "e2e-test": "jest __e2e-tests__ --runInBand --silent",
-    "lint": "eslint --quiet -f codeframe src"
+    "lint": "eslint --quiet -f codeframe src",
+    "update-version": "node scripts/update-version.js"
   },
   "pre-commit": [
     "test-prod"
@@ -33,6 +34,7 @@
   "homepage": "https://github.com/oscartavarez/cypress-recorder#readme",
   "dependencies": {
     "@medv/finder": "^1.1.0",
+    "edit-json-file": "^1.3.1",
     "vue": "^2.5.17",
     "vue-clipboard2": "^0.2.1",
     "vue-highlightjs": "^1.3.3"
