@@ -129,6 +129,8 @@ class RecordingController {
     msg.frameUrl = sender ? sender.url : null;
 
     if (!this._isPaused) {
+      msg.timeStamp = Date.now();
+
       this._recording.push(msg);
       chrome.storage.local.set({recording: this._recording}, () => {
         console.debug('stored recording updated');

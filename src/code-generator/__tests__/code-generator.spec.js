@@ -20,4 +20,35 @@ describe('code-generator', () => {
     expect(result).toContain("cy.get('a.link').click()")
   })
 
+  test('it includes cy.wait commands when insertWaitCommands is true', () => {
+    const now = Date.now()
+    const events = [
+      { action: 'click', selector: 'a.link', frameId: 0, frameUrl: 'https://some.site.com', timeStamp: now },
+      { action: 'click', selector: 'a.link2', frameId: 0, frameUrl: 'https://some.site.com', timeStamp: now + 1000 },
+      { action: 'click', selector: 'a.link3', frameId: 0, frameUrl: 'https://some.site.com', timeStamp: now + 2000 }
+    ]
+    const codeGenerator = new CodeGenerator({
+      insertWaitCommands: true
+    })
+
+    expect(codeGenerator._options.insertWaitCommands).toBe(true)
+
+    const result = codeGenerator._parseEvents(events)
+    expect(result).toContain('cy.wait(')
+  })
+
+  test('it excludes cy.wait commands when insertWaitCommands is false', () => {
+    const now = Date.now()
+    const events = [
+      { action: 'click', selector: 'a.link', frameId: 0, frameUrl: 'https://some.site.com', timeStamp: now },
+      { action: 'click', selector: 'a.link2', frameId: 0, frameUrl: 'https://some.site.com', timeStamp: now + 1000 },
+      { action: 'click', selector: 'a.link3', frameId: 0, frameUrl: 'https://some.site.com', timeStamp: now + 2000 }
+    ]
+    const codeGenerator = new CodeGenerator()
+
+    codeGenerator._options = {...codeGenerator._options, insertWaitCommands: false}
+
+    const result = codeGenerator._parseEvents(events)
+    expect(result.includes('cy.wait(')).toBe(false)
+  })
 })

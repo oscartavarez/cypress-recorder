@@ -38,6 +38,12 @@
                 add blank lines between code blocks
               </label>
             </div>
+            <div class="settings-group">
+              <label>
+                <input id="options-code-insertWaitCommands" type="checkbox" v-model="options.code.insertWaitCommands" @change="save">
+                insert wait commands
+              </label>
+            </div>
           </div>
         </div>
       </div>

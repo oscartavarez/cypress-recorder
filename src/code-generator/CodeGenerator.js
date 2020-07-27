@@ -13,7 +13,8 @@ const wrapItFooter = ` })\n`
 export const defaults = {
   wrapDescribe: true,
   blankLinesBetweenBlocks: true,
-  dataAttribute: ''
+  dataAttribute: '',
+  insertWaitCommands: false
 }
 
 export default class CodeGenerator {
@@ -61,10 +62,22 @@ export default class CodeGenerator {
     let result = '';
 
     for (let i = 0; i < events.length; i++) {
-      const { action, selector, value, href, keyCode, tagName, targetType, frameId, frameUrl } = events[i];
+      const { action, selector, value, href, keyCode, tagName, targetType, frameId, frameUrl, timeStamp } = events[i]
 
       // we need to keep a handle on what frames events originate from
       this._setFrames(frameId, frameUrl);
+
+      if (this._options.insertWaitCommands) {
+        // Determine wait ms duration by subtracting the previous event
+        // time stamp from the time stamp of the current event being parsed
+        const waitMs = i > 0 ? timeStamp - events[i - 1].timeStamp : Date.now() - timeStamp
+
+        if (waitMs) {
+          this._blocks.push(
+            new Block(this._frameId, { type: null, value: `${this._frame}.wait(${waitMs});` })
+          )
+        }
+      }
 
       switch (action) {
         case 'keydown':

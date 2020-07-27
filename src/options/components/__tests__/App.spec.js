@@ -41,6 +41,7 @@ describe('App.vue', () => {
     const options = {code: {wrapAsync: true}};
     const mocks = {$chrome: createChromeLocalStorageMock(options)};
     const wrapper = mount(App, {mocks, localVue});
+
     return wrapper.vm
       .$nextTick()
       .then(() => {
@@ -50,6 +51,12 @@ describe('App.vue', () => {
         return wrapper.vm.$nextTick();
       })
       .then(() => {
+        const checkBox = wrapper.find('#options-code-insertWaitCommands')
+        checkBox.trigger('click')
+        expect(wrapper.find('.saving-badge').text()).toEqual('Saving...')
+        return wrapper.vm.$nextTick()
+      })
+      .then(() => {
         // we need to simulate a page reload
         wrapper.vm.load();
         return wrapper.vm.$nextTick();
@@ -57,6 +64,10 @@ describe('App.vue', () => {
       .then(() => {
         const checkBox = wrapper.find('#options-code-wrapDescribe');
         return expect(checkBox.element.checked).toBeFalsy();
+      })
+      .then(() => {
+        const checkBox = wrapper.find('#options-code-insertWaitCommands')
+        return expect(checkBox.element.checked).toBeTruthy()
       });
   });
 });
